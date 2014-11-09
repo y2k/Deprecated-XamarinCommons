@@ -1,0 +1,4 @@
+packages/
+XamarinCommons/obj/
+XamarinCommons/bin/
+*.userprefs
