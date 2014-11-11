@@ -6,11 +6,10 @@ namespace XamarinCommons.Image
 {
 	public interface IDiskCache
 	{
-		[Obsolete]
-		ImageWrapper Get (Uri uri);
-
 		Task<ImageWrapper> GetAsync (Uri uri);
 
-		Task Put (Uri uri, Stream image);
+		Task PutAsync (Uri uri, Stream image);
+
+		IImageDecoder Decoder { get; set; }
 	}
 }

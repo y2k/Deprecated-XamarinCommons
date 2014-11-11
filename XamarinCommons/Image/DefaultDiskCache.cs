@@ -7,8 +7,6 @@ namespace XamarinCommons.Image
 {
 	public class DefaultDiskCache : IDiskCache
 	{
-		public IImageDecoder Decoder { get; set; }
-
 		IFolder root;
 
 		public DefaultDiskCache ()
@@ -16,7 +14,17 @@ namespace XamarinCommons.Image
 			root = FileSystem.Current.LocalStorage;
 		}
 
+		public async Task PurgeAsync ()
+		{
+			var list = await root.GetFilesAsync ();
+			foreach (var file in list) {
+				await file.DeleteAsync ();
+			}
+		}
+
 		#region IDiskCache implementation
+
+		public IImageDecoder Decoder { get; set; }
 
 		public async Task<ImageWrapper> GetAsync (Uri uri)
 		{
@@ -28,21 +36,7 @@ namespace XamarinCommons.Image
 			return new ImageWrapper { Image = image };
 		}
 
-		public ImageWrapper Get (Uri uri)
-		{
-			var name = ConvertUriToFilename (uri);
-			if (root.CheckExistsAsync (name).Result == ExistenceCheckResult.NotFound)
-				return null;
-			var f = root.GetFileAsync (name).Result;
-
-			//using (var stream = f.OpenAsync (FileAccess.Read).Result) {
-			//    var i = decoder.Decode (f.Path, stream);
-			//    return new ImageWrapper { Image = i };
-			//}
-			return new ImageWrapper { Image = Decoder.Decode (f) };
-		}
-
-		public async Task Put (Uri uri, Stream image)
+		public async Task PutAsync (Uri uri, Stream image)
 		{
 			var file = ConvertUriToFilename (uri);
 			if (await root.CheckExistsAsync (file) == ExistenceCheckResult.FileExists)

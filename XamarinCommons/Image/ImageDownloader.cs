@@ -17,11 +17,15 @@ namespace XamarinCommons.Image
 
 		public IDiskCache DiskCache  { get; set; }
 
+		public IImageDecoder Decoder { get; set; }
+
 		HttpClient webClient = new HttpClient ();
 		IDictionary<object, Uri> lockedImages = new Dictionary<object, Uri> ();
 
-		public async Task<ImageWrapper> Load (object token, Uri imageUri)
+		public async Task<ImageWrapper> LoadAsync (object token, Uri imageUri)
 		{
+			LazyInitalize ();
+
 			if (imageUri == null) {
 				lockedImages.Remove (token);
 				return new ImageWrapper ();
@@ -49,11 +53,17 @@ namespace XamarinCommons.Image
 			return ImageWrapper.Invalide;
 		}
 
+		void LazyInitalize ()
+		{
+			MemoryCache.Decoder = Decoder;
+			DiskCache.Decoder = Decoder;
+		}
+
 		async Task<ImageWrapper> DownloadImage (Uri uri, int index = 0)
 		{
 			try {
 				using (var ins = await webClient.GetStreamAsync (uri)) {
-					await DiskCache.Put (uri, ins);
+					await DiskCache.PutAsync (uri, ins);
 					var image = await DiskCache.GetAsync (uri);
 					MemoryCache.Put (uri, image);
 					return image;

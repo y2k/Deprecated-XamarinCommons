@@ -5,8 +5,6 @@ namespace XamarinCommons.Image
 {
 	public class DefaultMemoryCache : IMemoryCache
 	{
-		public IImageDecoder Decoder { get; set; }
-
 		LRUCache<Uri, ImageWrapper> cache;
 
 		public DefaultMemoryCache ()
@@ -14,7 +12,14 @@ namespace XamarinCommons.Image
 			cache = new LRUCache<Uri, ImageWrapper> (100, 4 * 1024 * 1024, s => Decoder.GetImageSize (s));
 		}
 
+		public void Purge()
+		{
+			cache.Purge ();
+		}
+
 		#region IMemoryCache implementation
+
+		public IImageDecoder Decoder { get; set; }
 
 		public ImageWrapper Get (Uri uri)
 		{
@@ -30,7 +35,7 @@ namespace XamarinCommons.Image
 
 		#region Nested classes
 
-		private class LRUCache<TKey, TValue> where TValue : class, IDisposable
+		class LRUCache<TKey, TValue> where TValue : class, IDisposable
 		{
 			Dictionary<TKey, LinkedListNode<TValue>> dict;
 			Dictionary<LinkedListNode<TValue>, TKey> revdict;
