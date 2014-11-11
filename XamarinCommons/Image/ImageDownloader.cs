@@ -38,6 +38,7 @@ namespace XamarinCommons.Image
 			lockedImages [token] = imageUri;
 			image = await DiskCache.GetAsync (imageUri);
 			if (image != null) {
+				MemoryCache.Put (imageUri, image);
 				if (lockedImages.Any (s => s.Key == token && s.Value == imageUri)) {
 					lockedImages.Remove (token);
 					return image;
