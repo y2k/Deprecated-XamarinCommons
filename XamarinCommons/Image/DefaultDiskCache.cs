@@ -24,8 +24,8 @@ namespace XamarinCommons.Image
 			if (await root.CheckExistsAsync (name) == ExistenceCheckResult.NotFound)
 				return null;
 			var f = await root.GetFileAsync (name);
-
-			return new ImageWrapper { Image = Decoder.Decode (f) };
+			var image = await Task.Run (() => Decoder.Decode (f));
+			return new ImageWrapper { Image = image };
 		}
 
 		public ImageWrapper Get (Uri uri)
@@ -42,26 +42,28 @@ namespace XamarinCommons.Image
 			return new ImageWrapper { Image = Decoder.Decode (f) };
 		}
 
-		public void Put (Uri uri, Stream image)
+		public async Task Put (Uri uri, Stream image)
 		{
 			var file = ConvertUriToFilename (uri);
-			if (root.CheckExistsAsync (file).Result == ExistenceCheckResult.FileExists)
+			if (await root.CheckExistsAsync (file) == ExistenceCheckResult.FileExists)
 				return;
 
 			var tn = Guid.NewGuid () + ".tmp";
-			var tmp = root.CreateFileAsync (tn, CreationCollisionOption.ReplaceExisting).Result;
-			using (var outs = tmp.OpenAsync (FileAccess.ReadAndWrite).Result) {
-				var buf = new byte[4 * 1024];
-				int count;
-				while ((count = image.Read (buf, 0, buf.Length)) > 0) {
-					outs.Write (buf, 0, count);
-				}
+			var tmp = await root.CreateFileAsync (tn, CreationCollisionOption.ReplaceExisting);
+			using (var outs = await tmp.OpenAsync (FileAccess.ReadAndWrite)) {
+				await Task.Run (() => {
+					var buf = new byte[4 * 1024];
+					int count;
+
+					while ((count = image.Read (buf, 0, buf.Length)) > 0)
+						outs.Write (buf, 0, count);
+				});
 			}
 
 			try {
-				tmp.RenameAsync (file).Wait ();
+				await tmp.RenameAsync (file);
 			} catch {
-				tmp.DeleteAsync ().Wait ();
+				await tmp.DeleteAsync ();
 			}
 		}
 

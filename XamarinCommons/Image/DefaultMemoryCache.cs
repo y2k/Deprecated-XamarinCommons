@@ -3,13 +3,13 @@ using System.Collections.Generic;
 
 namespace XamarinCommons.Image
 {
-	public class MemoryCache : IMemoryCache
+	public class DefaultMemoryCache : IMemoryCache
 	{
 		public IImageDecoder Decoder { get; set; }
 
 		LRUCache<Uri, ImageWrapper> cache;
 
-		public MemoryCache ()
+		public DefaultMemoryCache ()
 		{
 			cache = new LRUCache<Uri, ImageWrapper> (100, 4 * 1024 * 1024, s => Decoder.GetImageSize (s));
 		}

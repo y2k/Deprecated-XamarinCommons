@@ -11,6 +11,6 @@ namespace XamarinCommons.Image
 
 		Task<ImageWrapper> GetAsync (Uri uri);
 
-		void Put (Uri uri, Stream image);
+		Task Put (Uri uri, Stream image);
 	}
 }

@@ -2,3 +2,5 @@ packages/
 XamarinCommons/obj/
 XamarinCommons/bin/
 *.userprefs
+XamarinCommonsTests/bin
+XamarinCommonsTests/obj
