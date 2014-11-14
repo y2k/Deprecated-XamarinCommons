@@ -24,16 +24,16 @@ namespace XamarinCommons.Image
 
 		#region IDiskCache implementation
 
-		public IImageDecoder Decoder { get; set; }
+		public ImageDecoder Decoder { get; set; }
 
-		public async Task<ImageWrapper> GetAsync (Uri uri)
+		public async Task<object> GetAsync (Uri uri)
 		{
 			var name = ConvertUriToFilename (uri);
 			if (await root.CheckExistsAsync (name) == ExistenceCheckResult.NotFound)
 				return null;
 			var f = await root.GetFileAsync (name);
 			var image = await Task.Run (() => Decoder.Decode (f));
-			return new ImageWrapper { Image = image };
+			return image ;
 		}
 
 		public async Task PutAsync (Uri uri, Stream image)

@@ -33,11 +33,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Image\DefaultDiskCache.cs" />
     <Compile Include="Image\IDiskCache.cs" />
-    <Compile Include="Image\IImageDecoder.cs" />
     <Compile Include="Image\ImageWrapper.cs" />
     <Compile Include="Image\IMemoryCache.cs" />
     <Compile Include="Image\ImageDownloader.cs" />
     <Compile Include="Image\DefaultMemoryCache.cs" />
+    <Compile Include="Image\ImageDecoder.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />

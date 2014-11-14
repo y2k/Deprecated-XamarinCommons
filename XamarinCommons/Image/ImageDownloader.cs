@@ -8,7 +8,7 @@ namespace XamarinCommons.Image
 {
 	public class ImageDownloader
 	{
-		public static readonly ImageWrapper Invalid = new ImageWrapper ();
+		public static readonly object InvalideImage = new object ();
 
 		const int MaxAttempts = 5;
 		const int BaseAttemptDelay = 500;
@@ -17,18 +17,18 @@ namespace XamarinCommons.Image
 
 		public IDiskCache DiskCache  { get; set; }
 
-		public IImageDecoder Decoder { get; set; }
+		public ImageDecoder Decoder { get; set; }
 
 		HttpClient webClient = new HttpClient ();
 		IDictionary<object, Uri> lockedImages = new Dictionary<object, Uri> ();
 
-		public async Task<ImageWrapper> LoadAsync (object token, Uri imageUri)
+		public async Task<object> LoadAsync (object token, Uri imageUri)
 		{
 			LazyInitalize ();
 
 			if (imageUri == null) {
 				lockedImages.Remove (token);
-				return new ImageWrapper ();
+				return InvalideImage;
 			}
 
 			var image = MemoryCache.Get (imageUri);
@@ -43,7 +43,7 @@ namespace XamarinCommons.Image
 					lockedImages.Remove (token);
 					return image;
 				}
-				return ImageWrapper.Invalide;
+				return InvalideImage;
 			}
 
 			image = await DownloadImage (imageUri);
@@ -51,7 +51,7 @@ namespace XamarinCommons.Image
 				lockedImages.Remove (token);
 				return image;
 			}
-			return ImageWrapper.Invalide;
+			return InvalideImage;
 		}
 
 		void LazyInitalize ()
@@ -60,7 +60,7 @@ namespace XamarinCommons.Image
 			DiskCache.Decoder = Decoder;
 		}
 
-		async Task<ImageWrapper> DownloadImage (Uri uri, int index = 0)
+		async Task<object> DownloadImage (Uri uri, int index = 0)
 		{
 			try {
 				using (var ins = await webClient.GetStreamAsync (uri)) {
@@ -76,7 +76,7 @@ namespace XamarinCommons.Image
 			}
 
 			if (index >= MaxAttempts)
-				return new ImageWrapper ();
+				return null;
 
 			await Task.Delay (BaseAttemptDelay << index);
 			return await DownloadImage (uri, index + 1);

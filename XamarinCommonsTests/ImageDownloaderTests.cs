@@ -80,7 +80,7 @@ namespace XamarinCommonsTests
 			};
 		}
 
-		public class MockDecoder : IImageDecoder
+		public class MockDecoder : ImageDecoder
 		{
 			public object Decode (IFile file)
 			{

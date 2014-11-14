@@ -4,10 +4,10 @@ namespace XamarinCommons.Image
 {
 	public interface IMemoryCache
 	{
-		ImageWrapper Get (Uri uri);
+		object Get (Uri uri);
 
-		void Put (Uri uri, ImageWrapper image);
+		void Put (Uri uri, object image);
 
-		IImageDecoder Decoder { get; set; }
+		ImageDecoder Decoder { get; set; }
 	}
 }

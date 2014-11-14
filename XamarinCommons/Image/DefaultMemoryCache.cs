@@ -5,11 +5,11 @@ namespace XamarinCommons.Image
 {
 	public class DefaultMemoryCache : IMemoryCache
 	{
-		LRUCache<Uri, ImageWrapper> cache;
+		LRUCache<Uri, IDisposable> cache;
 
 		public DefaultMemoryCache ()
 		{
-			cache = new LRUCache<Uri, ImageWrapper> (100, 4 * 1024 * 1024, s => Decoder.GetImageSize (s));
+			cache = new LRUCache<Uri, IDisposable> (100, 4 * 1024 * 1024, s => Decoder.GetImageSize (s));
 		}
 
 		public void Purge()
@@ -19,16 +19,16 @@ namespace XamarinCommons.Image
 
 		#region IMemoryCache implementation
 
-		public IImageDecoder Decoder { get; set; }
+		public ImageDecoder Decoder { get; set; }
 
-		public ImageWrapper Get (Uri uri)
+		public object Get (Uri uri)
 		{
 			return cache [uri];
 		}
 
-		public void Put (Uri uri, ImageWrapper image)
+		public void Put (Uri uri, object image)
 		{
-			cache [uri] = image;
+			cache [uri] = (IDisposable)image;
 		}
 
 		#endregion
