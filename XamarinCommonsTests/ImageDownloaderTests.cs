@@ -20,8 +20,8 @@ namespace XamarinCommonsTests
 		public async void TestLoad ()
 		{
 			var r = await module.LoadAsync (new object (), new Uri ("https://upload.wikimedia.org/wikipedia/en/b/bc/Wiki.png"));
-			Assert.AreNotSame (ImageWrapper.Invalide, r);
-			Assert.NotNull (r.Image);
+			Assert.AreNotSame (ImageDownloader.InvalideImage, r);
+			Assert.NotNull (r);
 		}
 
 		[Test]
@@ -34,9 +34,9 @@ namespace XamarinCommonsTests
 			var r1 = await t1;
 			var r2 = await t2;
 
-			Assert.AreSame (ImageWrapper.Invalide, r1);
-			Assert.AreNotSame (ImageWrapper.Invalide, r2);
-			Assert.NotNull (r2.Image);
+			Assert.AreSame (ImageDownloader.InvalideImage, r1);
+			Assert.AreNotSame (ImageDownloader.InvalideImage, r2);
+			Assert.NotNull (r2);
 		}
 
 		[Test]
@@ -49,8 +49,8 @@ namespace XamarinCommonsTests
 			var r = await module.LoadAsync (new object (), new Uri ("https://upload.wikimedia.org/wikipedia/en/b/bc/Wiki.png"));
 			var duration = DateTime.Now - now;
 
-			Assert.AreNotSame (ImageWrapper.Invalide, r);
-			Assert.NotNull (r.Image);
+			Assert.AreNotSame (ImageDownloader.InvalideImage, r);
+			Assert.NotNull (r);
 			Assert.IsTrue (duration.TotalMilliseconds < 1, "Duration = " + duration);
 		}
 
@@ -64,8 +64,8 @@ namespace XamarinCommonsTests
 			var r = await module.LoadAsync (new object (), new Uri ("https://upload.wikimedia.org/wikipedia/en/b/bc/Wiki.png"));
 			var duration = DateTime.Now - now;
 
-			Assert.AreNotSame (ImageWrapper.Invalide, r);
-			Assert.NotNull (r.Image);
+			Assert.AreNotSame (ImageDownloader.InvalideImage, r);
+			Assert.NotNull (r);
 			Assert.IsTrue (duration.TotalMilliseconds < 1, "Duration = " + duration);
 		}
 
@@ -82,15 +82,15 @@ namespace XamarinCommonsTests
 
 		public class MockDecoder : ImageDecoder
 		{
+			public override int GetImageSize (object commonImage)
+			{
+				return (int)commonImage;
+			}
+
 			public object Decode (IFile file)
 			{
 				using (var stream = file.OpenAsync (FileAccess.Read).Result)
 					return (int)stream.Length;
-			}
-
-			public int GetImageSize (ImageWrapper commonImage)
-			{
-				return (int)commonImage.Image;
 			}
 		}
 	}
