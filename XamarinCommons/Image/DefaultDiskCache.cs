@@ -57,7 +57,7 @@ namespace XamarinCommons.Image
 			try {
 				await tmp.RenameAsync (file);
 			} catch {
-				await tmp.DeleteAsync ();
+				tmp.DeleteAsync ();
 			}
 		}
 
